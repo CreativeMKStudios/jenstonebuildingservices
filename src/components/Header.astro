@@ -1,0 +1,38 @@
+---
+import { Image } from "astro:assets";
+import { site } from "../data/site";
+
+const path = Astro.url.pathname;
+const items = [
+  { href: "/", label: "Home" },
+  { href: "/about/", label: "About" },
+  { href: "/services/", label: "Services" },
+  { href: "/projects/", label: "Projects" },
+  { href: "/contact/", label: "Contact" },
+];
+
+function current(href: string) {
+  if (href === "/") return path === "/";
+  return path.startsWith(href);
+}
+---
+
+<header class="site-header">
+  <div class="header-inner">
+    <a class="logo" href="/" aria-label="Jenstone Building Services, home">
+      <Image src={site.logo} alt="" width={336} height={114} densities={[1, 2]} />
+    </a>
+    <input class="nav-toggle" type="checkbox" id="nav-toggle" />
+    <label class="nav-burger" for="nav-toggle">Menu</label>
+    <nav class="nav" aria-label="Main">
+      {
+        items.map((item) => (
+          <a href={item.href} aria-current={current(item.href) ? "page" : undefined}>
+            {item.label}
+          </a>
+        ))
+      }
+      <a class="btn" href="/contact/">Get a free quote</a>
+    </nav>
+  </div>
+</header>

@@ -1,0 +1,81 @@
+---
+import { Image } from "astro:assets";
+import Base from "../layouts/Base.astro";
+import QuoteBand from "../components/QuoteBand.astro";
+import { site, photos, localBusinessSchema, breadcrumbSchema, graph } from "../data/site";
+
+const crumbs = [
+  { name: "Home", path: "/" },
+  { name: "About", path: "/about/" },
+];
+
+const schema = graph(localBusinessSchema(), breadcrumbSchema(crumbs), {
+  "@type": "AboutPage",
+  name: "About Jenstone Building Services",
+  url: `${site.url}/about/`,
+  description: "Family building firm in Bedford since 2012, led by Ben Jenkins.",
+});
+---
+
+<Base
+  title="About Us | Jenstone Building Services"
+  description="Jenstone is a family building firm in Bedford, started in 2012. Ben and the team handle heritage repairs, extensions, brickwork and renovations."
+  schema={schema}
+>
+  <section class="page-hero">
+    <div class="wrap">
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="/">Home</a>
+        <span aria-hidden="true">/</span>
+        <span>About</span>
+      </nav>
+      <h1>A Bedford firm, run by the people on site</h1>
+      <p class="lede">
+        Jenstone Building Services started in 2012. We are still at 9 Goldington Road. The work is domestic, commercial and light industrial.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap split">
+      <div class="prose">
+        <p>
+          Ben Jenkins runs the firm. Clients mention him by name because he is the person who picks up the phone and stands in the house. The team is small on purpose. You are not passed between a sales desk and a subcontractor you have never met.
+        </p>
+        <p>
+          The registered company is {site.legalName}, number {site.companyNumber}. The registered office is the same Goldington Road address. An older Google review talks about tool supply under the Jenstone Industrial name. The building work is what the firm is known for now.
+        </p>
+        <p>
+          We are listed with the Federation of Master Builders. That listing is for heritage and listed buildings, brickwork, renovations, structural alterations, kitchens, bathrooms, carpentry, roofing, plastering, and interior and exterior decorating.
+        </p>
+        <h2>What you can expect</h2>
+        <ul class="list">
+          <li>A straight answer on whether we should take the job.</li>
+          <li>One team from the first visit to the handover.</li>
+          <li>Sites left ready for the next trade. Floor layers have said so in writing.</li>
+          <li>Lime and matching brick where an old house needs them.</li>
+          <li>Modern extensions and knock-throughs where the house needs space.</li>
+        </ul>
+        <p>
+          The combined time the trades have spent on the tools runs long. We do not dress that up. The proof is the wall, the roof and the room you walk into at the end.
+        </p>
+      </div>
+      <div>
+        <figure class="card">
+          <Image src={photos.workshop.src} alt={photos.workshop.alt} widths={[640, 1000]} sizes="(max-width: 980px) 100vw, 45vw" />
+          <figcaption class="card-body">
+            <h2 style="font-size:1.25rem;">From our Google profile</h2>
+            <p>Timber racks and a scaffold tower in the workshop. This is one of the photos on our Google listing, along with the company logo.</p>
+          </figcaption>
+        </figure>
+        <figure class="card" style="margin-top:14px;">
+          <Image src={photos.van.src} alt={photos.van.alt} widths={[640, 1000]} sizes="(max-width: 980px) 100vw, 45vw" />
+          <figcaption class="card-body">
+            <p>The van on a live job. If you see it on the drive, the work is ours.</p>
+          </figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+  <QuoteBand />
+</Base>

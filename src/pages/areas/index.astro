@@ -1,0 +1,58 @@
+---
+import { Image } from "astro:assets";
+import Base from "../../layouts/Base.astro";
+import QuoteBand from "../../components/QuoteBand.astro";
+import { areas, site, breadcrumbSchema, graph, localBusinessSchema } from "../../data/site";
+
+const crumbs = [
+  { name: "Home", path: "/" },
+  { name: "Areas", path: "/areas/" },
+];
+
+const schema = graph(localBusinessSchema(), breadcrumbSchema(crumbs));
+---
+
+<Base
+  title="Areas We Cover | Bedfordshire and Buckinghamshire"
+  description="Jenstone Building Services works from Bedford across Bedfordshire and Buckinghamshire, including Milton Keynes, Kempston, Ampthill, Flitwick and Wilstead."
+  schema={schema}
+>
+  <section class="page-hero">
+    <div class="wrap">
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="/">Home</a>
+        <span aria-hidden="true">/</span>
+        <span>Areas</span>
+      </nav>
+      <h1>Where the vans go</h1>
+      <p class="lede">
+        The yard is at {site.street}, {site.locality}, {site.postcode}. From there we cover Bedford, the rest of Bedfordshire, and Buckinghamshire.
+      </p>
+    </div>
+  </section>
+  <section class="section">
+    <div class="wrap cards">
+      {
+        areas.map((area) => (
+          <article class="card">
+            <a class="stretch" href={`/areas/${area.slug}/`}>
+              <Image src={area.image.src} alt={area.image.alt} widths={[480, 800]} sizes="(max-width: 760px) 100vw, 33vw" />
+              <div class="card-body">
+                <h2>{area.title}</h2>
+                <p>{area.summary}</p>
+                <span class="more">Local details</span>
+              </div>
+            </a>
+          </article>
+        ))
+      }
+    </div>
+    <div class="wrap prose" style="margin-top: 36px;">
+      <h2>Towns we are often in</h2>
+      <p>
+        Kempston, Brickhill, Putnoe, Elstow, Wilstead, Ampthill, Flitwick, Shefford, Biggleswade, Sandy, Leighton Buzzard, Milton Keynes, Newport Pagnell, Olney and Buckingham. If your town is not on the list, still call. Distance is a conversation, not a wall.
+      </p>
+    </div>
+  </section>
+  <QuoteBand />
+</Base>

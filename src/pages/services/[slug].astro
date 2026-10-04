@@ -1,0 +1,93 @@
+---
+import { Image } from "astro:assets";
+import Base from "../../layouts/Base.astro";
+import QuoteBand from "../../components/QuoteBand.astro";
+import { services, projects, site, breadcrumbSchema, graph, localBusinessSchema } from "../../data/site";
+
+export function getStaticPaths() {
+  return services.map((service) => ({ params: { slug: service.slug }, props: { service } }));
+}
+
+const { service } = Astro.props;
+const related = projects.filter((item) => item.service === service.title);
+const crumbs = [
+  { name: "Home", path: "/" },
+  { name: "Services", path: "/services/" },
+  { name: service.title, path: `/services/${service.slug}/` },
+];
+const schema = graph(
+  localBusinessSchema(),
+  breadcrumbSchema(crumbs),
+  {
+    "@type": "Service",
+    name: service.title,
+    serviceType: service.title,
+    description: service.summary,
+    url: `${site.url}/services/${service.slug}/`,
+    provider: { "@id": `${site.url}/#business` },
+    areaServed: ["Bedford", "Bedfordshire", "Buckinghamshire"],
+  },
+);
+---
+
+<Base title={`${service.title} in Bedford`} description={service.summary} schema={schema}>
+  <section class="page-hero">
+    <div class="wrap">
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="/">Home</a>
+        <span aria-hidden="true">/</span>
+        <a href="/services/">Services</a>
+        <span aria-hidden="true">/</span>
+        <span>{service.title}</span>
+      </nav>
+      <h1>{service.title}</h1>
+      <p class="lede">{service.summary}</p>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top: 20px;">
+    <div class="wrap split">
+      <div class="prose">
+        {service.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+        <h2>What is included</h2>
+        <ul class="list">
+          {service.includes.map((item) => <li>{item}</li>)}
+        </ul>
+        <p>
+          We cover <a href="/areas/bedford/">Bedford</a>, <a href="/areas/bedfordshire/">Bedfordshire</a> and <a href="/areas/buckinghamshire/">Buckinghamshire</a>.
+          For a price, use the <a href="/contact/">contact page</a> or call {site.phoneDisplay}.
+        </p>
+      </div>
+      <figure class="card">
+        <Image src={service.image.src} alt={service.image.alt} widths={[640, 1000]} sizes="(max-width: 980px) 100vw, 45vw" />
+        <figcaption class="card-body">{service.image.caption}</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  {
+    related.length > 0 && (
+      <section class="section" style="padding-top: 0;">
+        <div class="wrap">
+          <div class="section-head">
+            <h2>Related projects</h2>
+          </div>
+          <div class="cards">
+            {related.map((item) => (
+              <article class="card">
+                <a class="stretch" href={`/projects/${item.slug}/`}>
+                  <Image src={item.image.src} alt={item.image.alt} widths={[480, 800]} sizes="(max-width: 760px) 100vw, 33vw" />
+                  <div class="card-body">
+                    <h3>{item.title}</h3>
+                    <p>{item.summary}</p>
+                  </div>
+                </a>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
+  <QuoteBand />
+</Base>

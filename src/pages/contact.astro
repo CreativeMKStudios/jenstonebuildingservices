@@ -1,0 +1,116 @@
+---
+import Base from "../layouts/Base.astro";
+import { site, breadcrumbSchema, graph, localBusinessSchema } from "../data/site";
+
+const crumbs = [
+  { name: "Home", path: "/" },
+  { name: "Contact", path: "/contact/" },
+];
+
+const schema = graph(localBusinessSchema(), breadcrumbSchema(crumbs), {
+  "@type": "ContactPage",
+  name: "Contact Jenstone Building Services",
+  url: `${site.url}/contact/`,
+});
+---
+
+<Base
+  title="Contact Us | Jenstone Building Services, Bedford"
+  description="Call Jenstone on 01234 826776 or 07738 411842. Email hello@jenstonebuildingservices.co.uk. Yard at 9 Goldington Road, Bedford, MK40 3JY."
+  schema={schema}
+>
+  <section class="page-hero">
+    <div class="wrap">
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="/">Home</a>
+        <span aria-hidden="true">/</span>
+        <span>Contact</span>
+      </nav>
+      <h1>Tell us about the job</h1>
+      <p class="lede">
+        A phone call is the fastest way. If you would rather write, the form opens an email to us with what you typed. We do not store the form on this website.
+      </p>
+    </div>
+  </section>
+
+  <section class="section cream">
+    <div class="wrap contact-grid">
+      <div class="contact-card nap">
+        <h2>Jenstone Building Services</h2>
+        <p>
+          {site.street}<br />
+          {site.locality}<br />
+          {site.postcode}
+        </p>
+        <p>
+          <a href={`tel:${site.phoneTel}`}>Office {site.phoneDisplay}</a><br />
+          <a href={`tel:${site.mobileTel}`}>Mobile {site.mobileDisplay}</a><br />
+          <a href={`mailto:${site.email}`}>{site.email}</a>
+        </p>
+        <p>
+          <a href={site.whatsapp}>WhatsApp us</a><br />
+          <a href={site.map}>Directions on Google</a>
+        </p>
+        <p class="note">The Google listing shows the office closed on Sunday, and open from 7:30am on Monday. Call ahead if you are coming to the yard.</p>
+        <div class="map-slot" data-map>
+          <button class="btn btn-dark" type="button" data-map-btn>Show map</button>
+          <p class="note">The map loads from Google only after you ask for it.</p>
+        </div>
+      </div>
+      <form class="contact-card form" id="quote-form">
+        <div class="form-row">
+          <label>
+            Name
+            <input name="name" type="text" autocomplete="name" required />
+          </label>
+          <label>
+            Phone
+            <input name="phone" type="tel" autocomplete="tel" required />
+          </label>
+        </div>
+        <label>
+          Email
+          <input name="email" type="email" autocomplete="email" required />
+        </label>
+        <label>
+          Town
+          <input name="town" type="text" autocomplete="address-level2" />
+        </label>
+        <label>
+          What do you need done?
+          <textarea name="message" required></textarea>
+        </label>
+        <button class="btn btn-dark" type="submit">Email this to Jenstone</button>
+        <p class="note">This opens your email app with the message filled in, addressed to {site.email}.</p>
+      </form>
+    </div>
+  </section>
+</Base>
+
+<script>
+  const form = document.querySelector("#quote-form");
+  form?.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const data = new FormData(form as HTMLFormElement);
+    const name = String(data.get("name") || "");
+    const phone = String(data.get("phone") || "");
+    const email = String(data.get("email") || "");
+    const town = String(data.get("town") || "");
+    const message = String(data.get("message") || "");
+    const body = `Name: ${name}\nPhone: ${phone}\nEmail: ${email}\nTown: ${town}\n\n${message}`;
+    const href = `mailto:hello@jenstonebuildingservices.co.uk?subject=${encodeURIComponent("Quote request from the website")}&body=${encodeURIComponent(body)}`;
+    window.location.href = href;
+  });
+
+  const button = document.querySelector("[data-map-btn]");
+  button?.addEventListener("click", () => {
+    const slot = document.querySelector("[data-map]");
+    if (!slot) return;
+    const frame = document.createElement("iframe");
+    frame.title = "Map of Jenstone Building Services, 9 Goldington Road, Bedford";
+    frame.loading = "lazy";
+    frame.referrerPolicy = "no-referrer-when-downgrade";
+    frame.src = "https://maps.google.com/maps?q=Jenstone%20Building%20Services%209%20Goldington%20Road%20Bedford%20MK40%203JY&z=16&output=embed";
+    slot.replaceChildren(frame);
+  });
+</script>

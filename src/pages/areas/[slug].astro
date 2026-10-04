@@ -1,0 +1,63 @@
+---
+import { Image } from "astro:assets";
+import Base from "../../layouts/Base.astro";
+import QuoteBand from "../../components/QuoteBand.astro";
+import { areas, services, site, breadcrumbSchema, graph, localBusinessSchema } from "../../data/site";
+
+export function getStaticPaths() {
+  return areas.map((area) => ({ params: { slug: area.slug }, props: { area } }));
+}
+
+const { area } = Astro.props;
+const crumbs = [
+  { name: "Home", path: "/" },
+  { name: "Areas", path: "/areas/" },
+  { name: area.title.replace("Builders in ", ""), path: `/areas/${area.slug}/` },
+];
+const schema = graph(localBusinessSchema(), breadcrumbSchema(crumbs), {
+  "@type": "Service",
+  name: area.title,
+  description: area.summary,
+  url: `${site.url}/areas/${area.slug}/`,
+  provider: { "@id": `${site.url}/#business` },
+  areaServed: area.title.replace("Builders in ", ""),
+});
+---
+
+<Base title={area.title} description={area.summary} schema={schema}>
+  <section class="page-hero">
+    <div class="wrap">
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="/">Home</a>
+        <span aria-hidden="true">/</span>
+        <a href="/areas/">Areas</a>
+        <span aria-hidden="true">/</span>
+        <span>{area.title.replace("Builders in ", "")}</span>
+      </nav>
+      <h1>{area.title}</h1>
+      <p class="lede">{area.summary}</p>
+    </div>
+  </section>
+  <section class="section" style="padding-top: 10px;">
+    <div class="wrap split">
+      <div class="prose">
+        {area.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+        <h2>Services on these jobs</h2>
+        <ul class="list">
+          {
+            services.map((item) => (
+              <li>
+                <a href={`/services/${item.slug}/`}>{item.title}</a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+      <figure class="card">
+        <Image src={area.image.src} alt={area.image.alt} widths={[640, 1000]} sizes="(max-width: 980px) 100vw, 45vw" />
+        <figcaption class="card-body">{area.image.caption}</figcaption>
+      </figure>
+    </div>
+  </section>
+  <QuoteBand />
+</Base>

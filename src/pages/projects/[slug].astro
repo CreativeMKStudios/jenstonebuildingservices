@@ -1,0 +1,66 @@
+---
+import { Image } from "astro:assets";
+import Base from "../../layouts/Base.astro";
+import QuoteBand from "../../components/QuoteBand.astro";
+import { projects, services, site, breadcrumbSchema, graph } from "../../data/site";
+
+export function getStaticPaths() {
+  return projects.map((project) => ({ params: { slug: project.slug }, props: { project } }));
+}
+
+const { project } = Astro.props;
+const service = services.find((item) => item.title === project.service);
+const crumbs = [
+  { name: "Home", path: "/" },
+  { name: "Projects", path: "/projects/" },
+  { name: project.title, path: `/projects/${project.slug}/` },
+];
+const schema = graph(breadcrumbSchema(crumbs), {
+  "@type": "Article",
+  headline: project.title,
+  description: project.summary,
+  url: `${site.url}/projects/${project.slug}/`,
+  author: { "@id": `${site.url}/#business` },
+  about: project.place,
+});
+---
+
+<Base title={`${project.title} | ${project.place}`} description={project.summary} schema={schema}>
+  <section class="page-hero">
+    <div class="wrap">
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="/">Home</a>
+        <span aria-hidden="true">/</span>
+        <a href="/projects/">Projects</a>
+        <span aria-hidden="true">/</span>
+        <span>{project.title}</span>
+      </nav>
+      <p class="kicker">{project.place}</p>
+      <h1>{project.title}</h1>
+      <p class="lede">{project.summary}</p>
+    </div>
+  </section>
+  <section class="section" style="padding-top: 12px;">
+    <div class="wrap prose">
+      {project.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+      {
+        service && (
+          <p>
+            This sits under our <a href={`/services/${service.slug}/`}>{service.title.toLowerCase()}</a> work.
+          </p>
+        )
+      }
+    </div>
+    <div class="wrap gallery" style="margin-top: 28px;">
+      {
+        project.gallery.map((photo) => (
+          <figure>
+            <Image src={photo.src} alt={photo.alt} widths={[480, 900]} sizes="(max-width: 760px) 100vw, 33vw" />
+            <figcaption>{photo.caption}</figcaption>
+          </figure>
+        ))
+      }
+    </div>
+  </section>
+  <QuoteBand />
+</Base>

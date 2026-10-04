@@ -1,0 +1,71 @@
+---
+import { site, services, areas } from "../data/site";
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="wrap footer-grid">
+    <div>
+      <h2>{site.name}</h2>
+      <p>
+        Family builders in Bedford since {site.founded}. Heritage repairs, extensions, brickwork and renovations.
+      </p>
+      <p>
+        {site.street}<br />
+        {site.locality}<br />
+        {site.postcode}
+      </p>
+      <p>
+        <a href={`tel:${site.phoneTel}`}>{site.phoneDisplay}</a><br />
+        <a href={`tel:${site.mobileTel}`}>{site.mobileDisplay}</a><br />
+        <a href={`mailto:${site.email}`}>{site.email}</a>
+      </p>
+    </div>
+    <div>
+      <h2>Services</h2>
+      <ul>
+        {
+          services.map((item) => (
+            <li>
+              <a href={`/services/${item.slug}/`}>{item.title}</a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+    <div>
+      <h2>Visit</h2>
+      <ul>
+        <li><a href="/about/">About us</a></li>
+        <li><a href="/projects/">Projects</a></li>
+        <li><a href="/reviews/">Google reviews</a></li>
+        <li><a href="/areas/">Areas we cover</a></li>
+        {
+          areas.map((item) => (
+            <li>
+              <a href={`/areas/${item.slug}/`}>{item.title.replace("Builders in ", "")}</a>
+            </li>
+          ))
+        }
+        <li><a href="/contact/">Contact</a></li>
+        <li><a href="/privacy/">Privacy</a></li>
+      </ul>
+    </div>
+    <div>
+      <h2>Find us</h2>
+      <ul>
+        <li><a href={site.map}>Google profile</a></li>
+        <li><a href={site.fmb}>Federation of Master Builders</a></li>
+        <li><a href={site.instagram}>Instagram</a></li>
+        <li><a href={site.linkedin}>LinkedIn</a></li>
+        <li><a href={site.whatsapp}>WhatsApp</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="wrap legal">
+    <p>
+      © {year} {site.legalName}. Company number {site.companyNumber}. Registered office: {site.street}, {site.locality}, {site.postcode}.
+    </p>
+    <p>FMB member. 5.0 from 7 Google reviews.</p>
+  </div>
+</footer>

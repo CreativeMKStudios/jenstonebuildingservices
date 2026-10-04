@@ -1,0 +1,61 @@
+---
+import { Image } from "astro:assets";
+import Base from "../../layouts/Base.astro";
+import QuoteBand from "../../components/QuoteBand.astro";
+import { services, site, breadcrumbSchema, graph, localBusinessSchema } from "../../data/site";
+
+const crumbs = [
+  { name: "Home", path: "/" },
+  { name: "Services", path: "/services/" },
+];
+
+const schema = graph(localBusinessSchema(), breadcrumbSchema(crumbs), {
+  "@type": "ItemList",
+  name: "Building services",
+  itemListElement: services.map((item, index) => ({
+    "@type": "ListItem",
+    position: index + 1,
+    name: item.title,
+    url: `${site.url}/services/${item.slug}/`,
+  })),
+});
+---
+
+<Base
+  title="Building Services in Bedford | Jenstone"
+  description="Heritage repairs, house extensions, brickwork, home renovations and structural alterations. Jenstone Building Services, Bedford."
+  schema={schema}
+>
+  <section class="page-hero">
+    <div class="wrap">
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="/">Home</a>
+        <span aria-hidden="true">/</span>
+        <span>Services</span>
+      </nav>
+      <h1>Building work, from the footings to the paint</h1>
+      <p class="lede">
+        We are not a one-trade gang. The same firm can repair a listed roof, build an extension, fit the kitchen and decorate the room it sits in.
+      </p>
+    </div>
+  </section>
+  <section class="section">
+    <div class="wrap cards">
+      {
+        services.map((item) => (
+          <article class="card">
+            <a class="stretch" href={`/services/${item.slug}/`}>
+              <Image src={item.image.src} alt={item.image.alt} widths={[480, 800]} sizes="(max-width: 760px) 100vw, 33vw" />
+              <div class="card-body">
+                <h2>{item.title}</h2>
+                <p>{item.summary}</p>
+                <span class="more">Read more</span>
+              </div>
+            </a>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+  <QuoteBand />
+</Base>

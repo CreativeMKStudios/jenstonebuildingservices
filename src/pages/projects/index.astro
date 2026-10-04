@@ -1,0 +1,80 @@
+---
+import { Image } from "astro:assets";
+import Base from "../../layouts/Base.astro";
+import QuoteBand from "../../components/QuoteBand.astro";
+import { projects, gallery, site, breadcrumbSchema, graph } from "../../data/site";
+
+const crumbs = [
+  { name: "Home", path: "/" },
+  { name: "Projects", path: "/projects/" },
+];
+
+const schema = graph(breadcrumbSchema(crumbs), {
+  "@type": "CollectionPage",
+  name: "Building projects",
+  url: `${site.url}/projects/`,
+  description: "Photographs of Jenstone building work: extensions, walls, roofs, floors and renovations.",
+});
+---
+
+<Base
+  title="Building Projects | Jenstone Building Services"
+  description="Photographs of Jenstone work in Bedfordshire: brick extensions, garden walls, listed roofs, lime floors, kitchens and outbuildings."
+  schema={schema}
+>
+  <section class="page-hero">
+    <div class="wrap">
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="/">Home</a>
+        <span aria-hidden="true">/</span>
+        <span>Projects</span>
+      </nav>
+      <h1>The work, not a brochure set</h1>
+      <p class="lede">
+        These photographs are from our jobs and from our Google profile. You will see finished rooms and the messy middle, because that is what a real build looks like.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap cards">
+      {
+        projects.map((item) => (
+          <article class="card">
+            <a class="stretch" href={`/projects/${item.slug}/`}>
+              <Image src={item.image.src} alt={item.image.alt} widths={[480, 800]} sizes="(max-width: 760px) 100vw, 33vw" />
+              <div class="card-body">
+                <p class="kicker">{item.place}</p>
+                <h2>{item.title}</h2>
+                <p>{item.summary}</p>
+                <span class="more">View project</span>
+              </div>
+            </a>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="section" style="padding-top: 0;">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <h2>All site photographs</h2>
+          <p>Includes the workshop photo from our Google profile and the jobs above.</p>
+        </div>
+      </div>
+      <div class="gallery">
+        {
+          gallery.map((photo) => (
+            <figure>
+              <Image src={photo.src} alt={photo.alt} widths={[400, 800]} sizes="(max-width: 760px) 100vw, 33vw" />
+              <figcaption>{photo.caption}</figcaption>
+            </figure>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+  <QuoteBand />
+</Base>

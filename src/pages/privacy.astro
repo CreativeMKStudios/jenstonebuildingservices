@@ -1,0 +1,57 @@
+---
+import Base from "../layouts/Base.astro";
+import { site, breadcrumbSchema, graph } from "../data/site";
+
+const crumbs = [
+  { name: "Home", path: "/" },
+  { name: "Privacy", path: "/privacy/" },
+];
+const schema = graph(breadcrumbSchema(crumbs));
+---
+
+<Base
+  title="Privacy Policy | Jenstone Building Services"
+  description="How Jenstone Building Services handles your name, phone number and email when you ask for a quote."
+  schema={schema}
+>
+  <section class="page-hero">
+    <div class="wrap">
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="/">Home</a>
+        <span aria-hidden="true">/</span>
+        <span>Privacy</span>
+      </nav>
+      <h1>Privacy</h1>
+    </div>
+  </section>
+  <section class="section" style="padding-top: 10px;">
+    <div class="wrap prose">
+      <p>
+        This site is run by {site.legalName} (company number {site.companyNumber}), trading as {site.name}. The address is {site.street}, {site.locality}, {site.postcode}. Email {site.email}. Phone {site.phoneDisplay}.
+      </p>
+      <h2>What we collect</h2>
+      <p>
+        If you call, email or send a WhatsApp message, we receive the details you give us. That is usually your name, phone number, email address, town and a note about the work.
+      </p>
+      <p>
+        The form on the contact page does not send data to a server we control. It opens an email on your device, addressed to us. Once you send that email, we hold it like any other enquiry.
+      </p>
+      <h2>Why we use it</h2>
+      <p>
+        We use those details to reply, to quote, and to do the work if you hire us. We do not sell your details. We do not add you to a mailing list unless you ask.
+      </p>
+      <h2>How long we keep it</h2>
+      <p>
+        Enquiry emails are kept as business records while they are useful, and for as long as the law asks us to keep records of a job. You can ask us to delete an enquiry that did not become a job.
+      </p>
+      <h2>Cookies and the map</h2>
+      <p>
+        This site does not set advertising or analytics cookies. The map on the contact page stays unloaded until you press “Show map”. That map is provided by Google, and Google may set its own cookies once it loads.
+      </p>
+      <h2>Your rights</h2>
+      <p>
+        Under UK data protection law you can ask for a copy of the personal information we hold, ask us to correct it, or ask us to delete it where the law allows. Write to {site.email}. You can also complain to the Information Commissioner’s Office.
+      </p>
+    </div>
+  </section>
+</Base>
