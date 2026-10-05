@@ -29,11 +29,20 @@ import newWall from "../assets/new-brick-wall.jpg";
 import boundaryWall from "../assets/boundary-wall.jpg";
 import workshop from "../assets/workshop.jpg";
 
+const basePath = (import.meta.env.BASE_URL || "/").replace(/\/$/, "");
+
+export function publicUrl(path = "/") {
+  const root = `${site.url}/`;
+  return new URL(path.replace(/^\//, ""), root).href;
+}
+
 export const site = {
   name: "Jenstone Building Services",
   legalName: "Jenstone Industrial Ltd",
   companyNumber: "08057144",
-  url: "https://jenstonebuildingservices.co.uk",
+  url: basePath
+    ? `https://creativemkstudios.github.io${basePath}`
+    : "https://jenstonebuildingservices.co.uk",
   description:
     "Family builders in Bedford. Heritage repairs, house extensions, brickwork and home renovations across Bedfordshire and Buckinghamshire.",
   email: "hello@jenstonebuildingservices.co.uk",
@@ -549,8 +558,8 @@ export function localBusinessSchema() {
     name: site.name,
     legalName: site.legalName,
     url: site.url,
-    image: new URL("/apple-touch-icon.png", site.url).href,
-    logo: new URL("/apple-touch-icon.png", site.url).href,
+    image: publicUrl("/apple-touch-icon.png"),
+    logo: publicUrl("/apple-touch-icon.png"),
     telephone: site.phoneTel,
     email: site.email,
     foundingDate: site.founded,
@@ -592,7 +601,7 @@ export function breadcrumbSchema(items: { name: string; path: string }[]) {
       "@type": "ListItem",
       position: index + 1,
       name: item.name,
-      item: new URL(item.path, site.url).href,
+      item: publicUrl(item.path),
     })),
   };
 }
