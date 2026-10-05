@@ -1,13 +1,51 @@
-import { readdir, readFile, writeFile } from "node:fs/promises";
+import { readdir, readFile, unlink, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { parse } from "parse5";
 import { defineConfig } from "astro/config";
 import sitemap from "@astrojs/sitemap";
 
 const onPages = process.env.GITHUB_PAGES === "true";
 const onCdn = process.env.CDN_PUBLISH === "true";
-const cdnOrigin = "https://raw.githack.com";
-const cdnBase = "/CreativeMKStudios/jenstonebuildingservices/site";
+const cdnOrigin = "https://cdn.jsdelivr.net";
+const cdnBase = "/gh/CreativeMKStudios/jenstonebuildingservices@site";
+const voidTags = new Set(["area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "param", "source", "track", "wbr"]);
+
+function xmlText(value) {
+  return value.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+}
+
+function xmlAttr(value) {
+  return xmlText(value).replaceAll('"', "&quot;");
+}
+
+function serializeXml(node, raw = false) {
+  if (node.nodeName === "#text") {
+    if (!raw) return xmlText(node.value);
+    const safe = node.value.replaceAll("]]>", "]]]]><![CDATA[>");
+    return `<![CDATA[${safe}]]>`;
+  }
+  if (node.nodeName === "#comment") return "";
+  if (node.nodeName === "#documentType") return "<!DOCTYPE html>";
+  if (node.nodeName === "#document") {
+    return `<?xml version="1.0" encoding="UTF-8"?>${node.childNodes.map((child) => serializeXml(child)).join("")}`;
+  }
+
+  const name = node.tagName;
+  const attrs = [...(node.attrs || [])];
+  if (name === "html" && !attrs.some((attr) => attr.name === "xmlns")) {
+    attrs.unshift({ name: "xmlns", value: "http://www.w3.org/1999/xhtml" });
+  }
+  const rendered = attrs.map((attr) => ` ${attr.name}="${xmlAttr(attr.value)}"`).join("");
+  if (voidTags.has(name)) return `<${name}${rendered}/>`;
+  const isRaw = name === "script" || name === "style";
+  const children = (node.childNodes || []).map((child) => serializeXml(child, isRaw)).join("");
+  return `<${name}${rendered}>${children}</${name}>`;
+}
+
+function pageLinksToXhtml(value) {
+  return value.replaceAll("/index.html", "/index.xhtml").replaceAll("/404.html", "/404.xhtml");
+}
 const base = onCdn ? cdnBase : onPages ? "/jenstonebuildingservices" : "/";
 const publicOrigin = (process.env.PUBLIC_SITE_URL || "").replace(/\/$/, "");
 
@@ -29,12 +67,12 @@ function rewriteUrl(value, prefix, origin) {
 
   if (origin && value.startsWith(origin)) {
     const url = new URL(value);
-    url.pathname = toDirectoryIndex(url.pathname, prefix);
+    url.pathname = pageLinksToXhtml(toDirectoryIndex(url.pathname, prefix));
     return url.href;
   }
 
-  if (value.startsWith("/")) return toDirectoryIndex(value, prefix);
-  return value;
+  if (value.startsWith("/")) return pageLinksToXhtml(toDirectoryIndex(value, prefix));
+  return pageLinksToXhtml(value);
 }
 
 function rewriteSrcset(value, prefix, origin) {
@@ -87,7 +125,10 @@ function preparePublishedFiles({ prefix, origin }) {
                       return `"${rewriteUrl(value, normalized, origin)}"`;
                     })
                 : prefixed;
-              if (rewritten !== html) await writeFile(path, rewritten);
+              const output = origin ? serializeXml(parse(rewritten)) : rewritten;
+              const target = origin ? path.replace(/\.html$/, ".xhtml") : path;
+              if (output !== html || target !== path) await writeFile(target, output);
+              if (origin && target !== path) await unlink(path);
               continue;
             }
 
@@ -100,8 +141,8 @@ function preparePublishedFiles({ prefix, origin }) {
             );
             const next = text
               .replaceAll("/jenstonebuildingservices/", `${normalized}/`)
-              .replace(directoryUrl, (match) => `${match}index.html`)
-              .replace(`"start_url": "${normalized}/"`, `"start_url": "${normalized}/index.html"`);
+              .replace(directoryUrl, (match) => `${match}index.xhtml`)
+              .replace(`"start_url": "${normalized}/"`, `"start_url": "${normalized}/index.xhtml"`);
             if (next !== text) await writeFile(path, next);
           }
         }
