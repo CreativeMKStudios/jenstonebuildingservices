@@ -6,7 +6,8 @@ import sitemap from "@astrojs/sitemap";
 
 const onPages = process.env.GITHUB_PAGES === "true";
 const onCdn = process.env.CDN_PUBLISH === "true";
-const cdnBase = "/gh/CreativeMKStudios/jenstonebuildingservices@site";
+const cdnOrigin = "https://raw.githack.com";
+const cdnBase = "/CreativeMKStudios/jenstonebuildingservices/site";
 const base = onCdn ? cdnBase : onPages ? "/jenstonebuildingservices" : "/";
 const publicOrigin = (process.env.PUBLIC_SITE_URL || "").replace(/\/$/, "");
 
@@ -82,7 +83,7 @@ function preparePublishedFiles({ prefix, origin }) {
                     .replace(/srcset="([^"]*)"/g, (_, value) => {
                       return `srcset="${rewriteSrcset(value, normalized, origin)}"`;
                     })
-                    .replace(/"(https:\/\/cdn\.jsdelivr\.net[^"]+)"/g, (_, value) => {
+                    .replace(new RegExp(`"(${escapeRegExp(origin)}[^"]+)"`, "g"), (_, value) => {
                       return `"${rewriteUrl(value, normalized, origin)}"`;
                     })
                 : prefixed;
@@ -113,7 +114,7 @@ function preparePublishedFiles({ prefix, origin }) {
 
 export default defineConfig({
   site: onCdn
-    ? "https://cdn.jsdelivr.net"
+    ? cdnOrigin
     : publicOrigin
       ? publicOrigin
       : onPages
@@ -122,9 +123,7 @@ export default defineConfig({
   base,
   vite: {
     define: {
-      "import.meta.env.PUBLIC_SITE_URL": JSON.stringify(
-        onCdn ? "https://cdn.jsdelivr.net" : publicOrigin,
-      ),
+      "import.meta.env.PUBLIC_SITE_URL": JSON.stringify(onCdn ? cdnOrigin : publicOrigin),
     },
   },
   trailingSlash: "always",
@@ -138,7 +137,7 @@ export default defineConfig({
     }),
     preparePublishedFiles({
       prefix: base,
-      origin: onCdn ? "https://cdn.jsdelivr.net" : "",
+      origin: onCdn ? cdnOrigin : "",
     }),
   ],
 });

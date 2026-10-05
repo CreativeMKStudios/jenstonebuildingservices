@@ -12,6 +12,6 @@ npm run build
 
 The public site is published from `main` to the `site` branch:
 
-https://cdn.jsdelivr.net/gh/CreativeMKStudios/jenstonebuildingservices@site/index.html
+https://raw.githack.com/CreativeMKStudios/jenstonebuildingservices/site/index.html
 
-A normal `npm run build` keeps canonical links on jenstonebuildingservices.co.uk. Set `CDN_PUBLISH=true` for the jsDelivr address, or `GITHUB_PAGES=true` for https://creativemkstudios.github.io/jenstonebuildingservices/ once GitHub Pages is switched on.
+A normal `npm run build` keeps canonical links on jenstonebuildingservices.co.uk. Set `CDN_PUBLISH=true` for that public address, or `GITHUB_PAGES=true` for https://creativemkstudios.github.io/jenstonebuildingservices/ once GitHub Pages is switched on.
