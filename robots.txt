@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://cdn.jsdelivr.net/gh/CreativeMKStudios/jenstonebuildingservices@site/sitemap-index.xml

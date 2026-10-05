@@ -1,0 +1,25 @@
+{
+  "name": "Jenstone Building Services",
+  "short_name": "Jenstone",
+  "description": "Family builders in Bedford for heritage repairs, extensions, brickwork and home renovations.",
+  "start_url": "/gh/CreativeMKStudios/jenstonebuildingservices@site/index.xhtml",
+  "scope": "/gh/CreativeMKStudios/jenstonebuildingservices@site/",
+  "display": "standalone",
+  "background_color": "#090909",
+  "theme_color": "#090909",
+  "lang": "en-GB",
+  "icons": [
+    {
+      "src": "/gh/CreativeMKStudios/jenstonebuildingservices@site/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/gh/CreativeMKStudios/jenstonebuildingservices@site/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
