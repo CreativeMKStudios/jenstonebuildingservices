@@ -10,8 +10,8 @@ npm run dev
 npm run build
 ```
 
-The public site is published from `main` to GitHub Pages:
+The public site is published from `main` to the `site` branch:
 
-https://creativemkstudios.github.io/jenstonebuildingservices/
+https://cdn.jsdelivr.net/gh/CreativeMKStudios/jenstonebuildingservices@site/index.html
 
-A normal `npm run build` keeps canonical links on jenstonebuildingservices.co.uk. The Pages workflow sets `GITHUB_PAGES=true` so links work on the GitHub address.
+A normal `npm run build` keeps canonical links on jenstonebuildingservices.co.uk. Set `CDN_PUBLISH=true` for the jsDelivr address, or `GITHUB_PAGES=true` for https://creativemkstudios.github.io/jenstonebuildingservices/ once GitHub Pages is switched on.

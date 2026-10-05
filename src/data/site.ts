@@ -30,6 +30,7 @@ import boundaryWall from "../assets/boundary-wall.jpg";
 import workshop from "../assets/workshop.jpg";
 
 const basePath = (import.meta.env.BASE_URL || "/").replace(/\/$/, "");
+const configuredOrigin = (import.meta.env.PUBLIC_SITE_URL || "").replace(/\/$/, "");
 
 export function publicUrl(path = "/") {
   const root = `${site.url}/`;
@@ -40,9 +41,11 @@ export const site = {
   name: "Jenstone Building Services",
   legalName: "Jenstone Industrial Ltd",
   companyNumber: "08057144",
-  url: basePath
-    ? `https://creativemkstudios.github.io${basePath}`
-    : "https://jenstonebuildingservices.co.uk",
+  url: configuredOrigin
+    ? `${configuredOrigin}${basePath}`
+    : basePath
+      ? `https://creativemkstudios.github.io${basePath}`
+      : "https://jenstonebuildingservices.co.uk",
   description:
     "Family builders in Bedford. Heritage repairs, house extensions, brickwork and home renovations across Bedfordshire and Buckinghamshire.",
   email: "hello@jenstonebuildingservices.co.uk",
