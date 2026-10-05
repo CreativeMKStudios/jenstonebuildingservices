@@ -10,4 +10,8 @@ npm run dev
 npm run build
 ```
 
-The production site URL is set in `astro.config.mjs`.
+The public site is published from `main` to GitHub Pages:
+
+https://creativemkstudios.github.io/jenstonebuildingservices/
+
+A normal `npm run build` keeps canonical links on jenstonebuildingservices.co.uk. The Pages workflow sets `GITHUB_PAGES=true` so links work on the GitHub address.
